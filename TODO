@@ -1,0 +1,5 @@
+# TODO
+
+- [ ] Add solver
+- [ ] Refactor or extend functionality to support smaller data print (16 bits instead of u8)
+- [ ] Add file input
