@@ -1,5 +1,6 @@
 # TODO
 
-- [ ] Add solver
-- [ ] Refactor or extend functionality to support smaller data print (16 bits instead of u8)
+- [x] Add solver
 - [ ] Add file input
+- [ ] Add from_string
+- [ ] Add UI to show puzzle

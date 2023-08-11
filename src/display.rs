@@ -48,7 +48,7 @@ mod testsalso {
             let mut doku = Sudoku::new();
             for row in 0..9 {
                 for col in 0..9 {
-                    doku.set(row, col, (row / 3 % 3 * 3 + (col / 3)) as u8);
+                    doku = doku.set(row, col, (row / 3 % 3 * 3 + (col / 3)) as u8);
                 }
             }
             assert_eq!(
