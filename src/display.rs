@@ -30,7 +30,10 @@ mod testsalso {
     #[test]
     fn test_display() {
         assert_eq!(
-            format!("{}", Sudoku::new_with_values([[1, 2, 3, 4, 5, 6, 7, 8, 9]; 9])),
+            format!(
+                "{}",
+                Sudoku::new_with_values([[1, 2, 3, 4, 5, 6, 7, 8, 9]; 9])
+            ),
             r#"+---+---+---+
 |123|456|789|
 |123|456|789|
@@ -45,14 +48,14 @@ mod testsalso {
 |123|456|789|
 +---+---+---+"#
         );
-            let mut doku = Sudoku::new();
-            for row in 0..9 {
-                for col in 0..9 {
-                    doku = doku.set(row, col, (row / 3 % 3 * 3 + (col / 3)) as u8);
-                }
+        let mut doku = Sudoku::new();
+        for row in 0..9 {
+            for col in 0..9 {
+                doku = doku.set(row, col, (row / 3 % 3 * 3 + (col / 3)) as u8);
             }
-            assert_eq!(
-                format!("{}", doku),
+        }
+        assert_eq!(
+            format!("{}", doku),
             r#"+---+---+---+
 |000|111|222|
 |000|111|222|
@@ -67,6 +70,5 @@ mod testsalso {
 |666|777|888|
 +---+---+---+"#
         );
-
     }
 }

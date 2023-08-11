@@ -29,9 +29,9 @@ impl Sudoku {
         let copy = &mut self.clone();
         copy.set(row, col, val);
 
-        copy.verify_row(row) &&
-            copy.verify_col(col) &&
-            copy.verify_box(row - (row % 3), col - (col % 3))
+        copy.verify_row(row)
+            && copy.verify_col(col)
+            && copy.verify_box(row - (row % 3), col - (col % 3))
     }
 
     pub fn get(&self, row: usize, col: usize) -> u8 {
@@ -109,7 +109,11 @@ impl Sudoku {
 
     pub fn is_solved(&self) -> bool {
         // Check for any unset cells.
-        if self.data.iter().any(|row| row.iter().any(|cell| *cell == 0)) {
+        if self
+            .data
+            .iter()
+            .any(|row| row.iter().any(|cell| *cell == 0))
+        {
             return false;
         }
         self.verify()
@@ -151,19 +155,18 @@ mod tests {
         assert!(!Sudoku::new_with_values([[1, 2, 3, 4, 5, 6, 7, 8, 9]; 9]).verify());
 
         // Positive case
-        assert!(
-            Sudoku::new_with_values([
-                [8, 3, 5, 4, 1, 6, 9, 2, 7],
-                [2, 9, 6, 8, 5, 7, 4, 3, 1],
-                [4, 1, 7, 2, 9, 3, 6, 5, 8],
-                [5, 6, 9, 1, 3, 4, 7, 8, 2],
-                [1, 2, 3, 6, 7, 8, 5, 4, 9],
-                [7, 4, 8, 5, 2, 9, 1, 6, 3],
-                [6, 5, 2, 7, 8, 1, 3, 9, 4],
-                [9, 8, 1, 3, 4, 5, 2, 7, 6],
-                [3, 7, 4, 9, 6, 2, 8, 1, 5],
-            ]).verify()
-        );
+        assert!(Sudoku::new_with_values([
+            [8, 3, 5, 4, 1, 6, 9, 2, 7],
+            [2, 9, 6, 8, 5, 7, 4, 3, 1],
+            [4, 1, 7, 2, 9, 3, 6, 5, 8],
+            [5, 6, 9, 1, 3, 4, 7, 8, 2],
+            [1, 2, 3, 6, 7, 8, 5, 4, 9],
+            [7, 4, 8, 5, 2, 9, 1, 6, 3],
+            [6, 5, 2, 7, 8, 1, 3, 9, 4],
+            [9, 8, 1, 3, 4, 5, 2, 7, 6],
+            [3, 7, 4, 9, 6, 2, 8, 1, 5],
+        ])
+        .verify());
     }
 
     // #[test]

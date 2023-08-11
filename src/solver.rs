@@ -1,8 +1,8 @@
-use crate::Sudoku;
 use crate::sudoku_error::SudokuError;
+use crate::Sudoku;
 
 // Solve with DFS and return the first legal solution.
-fn solve_sudoku(sudoku: &Sudoku) -> Result<Sudoku, SudokuError> {
+pub fn solve_sudoku(sudoku: &Sudoku) -> Result<Sudoku, SudokuError> {
     if !sudoku.verify() {
         return Err(SudokuError::NoSolution);
     }
@@ -27,8 +27,8 @@ fn solve_sudoku(sudoku: &Sudoku) -> Result<Sudoku, SudokuError> {
 
 #[cfg(test)]
 mod tests {
-    use crate::Sudoku;
     use super::*;
+    use crate::Sudoku;
 
     fn solved_sudoku() -> Sudoku {
         Sudoku::new_with_values([
@@ -61,7 +61,7 @@ mod tests {
     fn test_solve_one_row() {
         let first_row_zero = &mut solved_sudoku();
         for i in 0..9 {
-            *first_row_zero = first_row_zero.set(0,i,0);
+            *first_row_zero = first_row_zero.set(0, i, 0);
         }
         let result = solve_sudoku(&first_row_zero).unwrap();
         assert_eq!(result, solved_sudoku());
