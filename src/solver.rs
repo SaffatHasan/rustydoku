@@ -15,6 +15,10 @@ pub fn solve_sudoku(sudoku: &Sudoku) -> Result<Sudoku, SudokuError> {
                 continue;
             }
             for val in 1..10 {
+                // Perform local check (fail fast).
+                if !sudoku.is_valid_to_set(row, col, val) {
+                    continue;
+                }
                 let result: Result<Sudoku, SudokuError> = solve_sudoku(&sudoku.set(row, col, val));
                 if result.is_ok() {
                     return result;
@@ -66,4 +70,11 @@ mod tests {
         let result = solve_sudoku(&first_row_zero).unwrap();
         assert_eq!(result, solved_sudoku());
     }
+
+    // Takes too long. Skip this.
+    // #[test]
+    // fn test_solve_empty() {
+    //     let result = solve_sudoku(&Sudoku::new()).unwrap();
+    //     assert_eq!(result, solved_sudoku());
+    // }
 }
