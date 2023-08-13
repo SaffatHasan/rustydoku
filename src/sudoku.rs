@@ -1,7 +1,6 @@
 use std::collections::HashSet;
 
-#[derive(PartialEq, Eq, Hash, Copy, Clone, Debug)]
-#[derive(Default)]
+#[derive(PartialEq, Eq, Hash, Copy, Clone, Debug, Default)]
 pub struct Sudoku {
     data: [[u8; 9]; 9],
 }
@@ -114,7 +113,7 @@ mod tests {
     fn test_new() {
         let values: [[u8; 9]; 9] = [[1, 2, 3, 4, 5, 6, 7, 8, 9]; 9];
         let sudoku: Sudoku = Sudoku::new(values);
-        for (row_idx, row ) in values.iter().enumerate() {
+        for (row_idx, row) in values.iter().enumerate() {
             for (col_idx, cell) in row.iter().enumerate() {
                 assert_eq!(sudoku.get(row_idx, col_idx), *cell);
             }

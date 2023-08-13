@@ -30,10 +30,7 @@ mod testsalso {
     #[test]
     fn test_display() {
         assert_eq!(
-            format!(
-                "{}",
-                Sudoku::new([[1, 2, 3, 4, 5, 6, 7, 8, 9]; 9])
-            ),
+            format!("{}", Sudoku::new([[1, 2, 3, 4, 5, 6, 7, 8, 9]; 9])),
             r#"+---+---+---+
 |123|456|789|
 |123|456|789|
