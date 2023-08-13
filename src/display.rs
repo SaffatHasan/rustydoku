@@ -32,7 +32,7 @@ mod testsalso {
         assert_eq!(
             format!(
                 "{}",
-                Sudoku::new_with_values([[1, 2, 3, 4, 5, 6, 7, 8, 9]; 9])
+                Sudoku::new([[1, 2, 3, 4, 5, 6, 7, 8, 9]; 9])
             ),
             r#"+---+---+---+
 |123|456|789|
@@ -48,7 +48,7 @@ mod testsalso {
 |123|456|789|
 +---+---+---+"#
         );
-        let mut doku = Sudoku::new();
+        let mut doku = Sudoku::default();
         for row in 0..9 {
             for col in 0..9 {
                 doku = doku.set(row, col, (row / 3 % 3 * 3 + (col / 3)) as u8);

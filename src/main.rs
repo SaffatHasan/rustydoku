@@ -20,7 +20,7 @@ struct MyApp {
 impl Default for MyApp {
     fn default() -> Self {
         Self {
-            board: Sudoku::new_with_values([
+            board: Sudoku::new([
                 [0, 0, 0, 0, 0, 0, 0, 0, 0],
                 [2, 9, 6, 8, 5, 7, 4, 3, 1],
                 [4, 1, 7, 2, 9, 3, 6, 5, 8],

@@ -26,7 +26,7 @@ pub fn solve_sudoku(sudoku: &Sudoku) -> Result<Sudoku, SudokuError> {
             }
         }
     }
-    return Err(SudokuError::NoSolution);
+    Err(SudokuError::NoSolution)
 }
 
 #[cfg(test)]
@@ -35,7 +35,7 @@ mod tests {
     use crate::Sudoku;
 
     fn solved_sudoku() -> Sudoku {
-        Sudoku::new_with_values([
+        Sudoku::new([
             [5, 3, 4, 6, 7, 8, 9, 1, 2],
             [6, 7, 2, 1, 9, 5, 3, 4, 8],
             [1, 9, 8, 3, 4, 2, 5, 6, 7],
@@ -67,7 +67,7 @@ mod tests {
         for i in 0..9 {
             *first_row_zero = first_row_zero.set(0, i, 0);
         }
-        let result = solve_sudoku(&first_row_zero).unwrap();
+        let result = solve_sudoku(first_row_zero).unwrap();
         assert_eq!(result, solved_sudoku());
     }
 

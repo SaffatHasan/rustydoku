@@ -1,26 +1,13 @@
 use std::collections::HashSet;
 
 #[derive(PartialEq, Eq, Hash, Copy, Clone, Debug)]
+#[derive(Default)]
 pub struct Sudoku {
     data: [[u8; 9]; 9],
 }
 
 impl Sudoku {
-    pub fn new() -> Sudoku {
-        Sudoku { data: [[0; 9]; 9] }
-    }
-
-    fn eq(&self, other: &Self) -> bool {
-        self.data == other.data
-    }
-
-    pub fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
-        for row in self.data.iter() {
-            std::hash::Hash::hash(row, state);
-        }
-    }
-
-    pub fn new_with_values(values: [[u8; 9]; 9]) -> Sudoku {
+    pub fn new(values: [[u8; 9]; 9]) -> Sudoku {
         Sudoku { data: values }
     }
 
@@ -89,7 +76,7 @@ impl Sudoku {
     }
 
     fn verify_box_by_index(&self, box_index: usize) -> bool {
-        self.verify_box(box_index / (3 as usize), box_index % 3)
+        self.verify_box(box_index / 3_usize, box_index % 3)
     }
 
     // Verifies that the 3x3 box that the cell is a member of is valid.
@@ -104,7 +91,7 @@ impl Sudoku {
                 seen.insert(value);
             }
         }
-        return true;
+        true
     }
 
     pub fn is_solved(&self) -> bool {
@@ -124,19 +111,19 @@ impl Sudoku {
 mod tests {
     use super::Sudoku;
     #[test]
-    fn test_new_with_values() {
+    fn test_new() {
         let values: [[u8; 9]; 9] = [[1, 2, 3, 4, 5, 6, 7, 8, 9]; 9];
-        let sudoku: Sudoku = Sudoku::new_with_values(values);
-        for row in 0..9 {
-            for col in 0..9 {
-                assert_eq!(sudoku.get(row, col), values[row][col]);
+        let sudoku: Sudoku = Sudoku::new(values);
+        for (row_idx, row ) in values.iter().enumerate() {
+            for (col_idx, cell) in row.iter().enumerate() {
+                assert_eq!(sudoku.get(row_idx, col_idx), *cell);
             }
         }
     }
 
     #[test]
     fn test_verify_then_set() {
-        let sudoku: Sudoku = Sudoku::new();
+        let sudoku: Sudoku = Sudoku::default();
         for i in 0..9 {
             assert!(sudoku.is_valid_to_set(0, 0, (i + 1) as u8));
         }
@@ -144,7 +131,7 @@ mod tests {
 
     #[test]
     fn test_set() {
-        let mut sudoku: Sudoku = Sudoku::new();
+        let mut sudoku: Sudoku = Sudoku::default();
         sudoku = sudoku.set(0, 0, 1);
         assert_eq!(sudoku.get(0, 0), 1);
     }
@@ -152,10 +139,10 @@ mod tests {
     #[test]
     fn test_verify() {
         // Negative case
-        assert!(!Sudoku::new_with_values([[1, 2, 3, 4, 5, 6, 7, 8, 9]; 9]).verify());
+        assert!(!Sudoku::new([[1, 2, 3, 4, 5, 6, 7, 8, 9]; 9]).verify());
 
         // Positive case
-        assert!(Sudoku::new_with_values([
+        assert!(Sudoku::new([
             [8, 3, 5, 4, 1, 6, 9, 2, 7],
             [2, 9, 6, 8, 5, 7, 4, 3, 1],
             [4, 1, 7, 2, 9, 3, 6, 5, 8],
@@ -168,16 +155,4 @@ mod tests {
         ])
         .verify());
     }
-
-    // #[test]
-    // fn test_hash() {
-    //     let sudoku1 = Sudoku::new_with_values([[1,2,3,4,5,6,7,8,9]; 9]);
-    //     let sudoku2 = Sudoku::new_with_values([[1,2,3,4,5,6,7,8,9]; 9]);
-
-    //     assert_eq!(sudoku1.hash(), sudoku2.hash());
-    //     sudoku1 = sudoku1.set(0,0, 2);
-
-    //     assert_ne!(sudoku1.hash(), sudoku2.hash());
-
-    // }
 }
