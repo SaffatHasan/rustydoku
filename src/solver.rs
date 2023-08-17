@@ -29,6 +29,51 @@ pub fn solve_sudoku(sudoku: &Sudoku) -> Result<Sudoku, SudokuError> {
     Err(SudokuError::NoSolution)
 }
 
+#[allow(dead_code)]
+pub fn solve_sudoku_bfs(sudoku: &Sudoku) -> Result<Sudoku, SudokuError> {
+    if !sudoku.verify() {
+        return Err(SudokuError::NoSolution);
+    }
+
+    if sudoku.is_solved() {
+        return Ok(*sudoku);
+    }
+
+    let mut queue: Vec<Sudoku> = Vec::new();
+    queue.push(sudoku.clone());
+
+    while !queue.is_empty() {
+        let current: Sudoku = queue.pop().unwrap();
+
+        for row in 0..9 {
+            for col in 0..9 {
+                if current.get(row, col) != None {
+                    continue;
+                }
+
+                for val in 1..10 {
+                    // Greedy, local check.
+                    if !current.is_valid_to_set(row, col, val) {
+                        continue;
+                    }
+                    let new_sudoku = current.clone().set(row, col, val);
+
+                    if !new_sudoku.verify() {
+                        continue;
+                    }
+                    queue.push(new_sudoku);
+
+                    if new_sudoku.is_solved() {
+                        return Ok(new_sudoku);
+                    }
+                }
+            }
+        }
+    }
+
+    Err(SudokuError::NoSolution)
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -50,20 +95,20 @@ mod tests {
 
     #[test]
     fn test_solve_already_complete_sudoku() {
-        let result = solve_sudoku(&solved_sudoku());
+        let result: Result<Sudoku, SudokuError> = solve_sudoku(&solved_sudoku());
         assert_eq!(result.unwrap(), solved_sudoku());
     }
 
     #[test]
     fn test_solve_one_missing_value() {
-        let missing_one = solved_sudoku().unset(0, 0);
-        let result = solve_sudoku(&missing_one);
+        let missing_one: Sudoku = solved_sudoku().unset(0, 0);
+        let result: Result<Sudoku, SudokuError> = solve_sudoku(&missing_one);
         assert_eq!(result.unwrap(), solved_sudoku());
     }
 
     #[test]
     fn test_solve_one_row() {
-        let first_row_zero = &mut solved_sudoku();
+        let first_row_zero: &mut Sudoku = &mut solved_sudoku();
         for i in 0..9 {
             *first_row_zero = first_row_zero.unset(0, i);
         }
@@ -71,10 +116,20 @@ mod tests {
         assert_eq!(result, solved_sudoku());
     }
 
+    #[test]
+    fn test_solve_one_row_bfs() {
+        let first_row_zero: &mut Sudoku = &mut solved_sudoku();
+        for i in 0..9 {
+            *first_row_zero = first_row_zero.unset(0, i);
+        }
+        let result: Sudoku = solve_sudoku_bfs(first_row_zero).unwrap();
+        assert_eq!(result, solved_sudoku());
+    }
+
     // Takes too long. Skip this.
     // #[test]
     // fn test_solve_empty() {
-    //     let result = solve_sudoku(&Sudoku::new()).unwrap();
+    //     let result = solve_sudoku_bfs(&Sudoku::default()).unwrap();
     //     assert_eq!(result, solved_sudoku());
     // }
 }
