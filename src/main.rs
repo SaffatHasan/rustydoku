@@ -7,10 +7,14 @@ use eframe::egui;
 
 fn main() -> Result<(), eframe::Error> {
     let options = eframe::NativeOptions {
-        initial_window_size: Some(egui::vec2(320.0, 240.0)),
+        initial_window_size: Some(egui::vec2(640.0, 480.0)),
         ..Default::default()
     };
-    eframe::run_native("Sudoku", options, Box::new(|_cc| Box::<MyApp>::default()))
+    eframe::run_native(
+        "Sudoku",
+        options,
+        Box::new(|_cc| Box::<MyApp>::default())
+    )
 }
 
 struct MyApp {
@@ -41,9 +45,26 @@ impl eframe::App for MyApp {
             egui::Grid::new("sudoku_grid").show(ui, |ui| {
                 for row in 0..9 {
                     for col in 0..9 {
-                        ui.label(format!("{}", self.board.get(row, col)));
+                        match self.board.get(row, col) {
+                            None => {
+                                let val = &mut " ".to_owned();
+                                ui.add(egui::TextEdit::singleline(val).char_limit(1));
+                            }
+                            Some(val) => {
+                                ui.label(format!("{}", val));
+                            }
+                        }
+                        if col % 3 == 2 {
+                            ui.add(egui::Separator::default().vertical());
+                        }
                     }
                     ui.end_row();
+                    if row % 3 == 2 {
+                        for _ in 0..12 {
+                            ui.add(egui::Separator::default().horizontal());
+                        }
+                        ui.end_row();
+                    }
                 }
             });
 
@@ -52,7 +73,7 @@ impl eframe::App for MyApp {
             }
 
             if ui.button("Reset").clicked() {
-                self.board = MyApp::default().board
+                self.board = MyApp::default().board;
             }
         });
     }
