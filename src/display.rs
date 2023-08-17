@@ -11,7 +11,7 @@ impl std::fmt::Display for Sudoku {
 
             for col in 0..9 {
                 match self.get(row, col) {
-                    None => output.push_str(" "),
+                    None => output.push(' '),
                     Some(val) => output.push_str(&format!("{}", val)),
                 }
                 if col == 2 || col == 5 {

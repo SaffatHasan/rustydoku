@@ -11,7 +11,7 @@ pub fn solve_sudoku(sudoku: &Sudoku) -> Result<Sudoku, SudokuError> {
     }
     for row in 0..9 {
         for col in 0..9 {
-            if sudoku.get(row, col) != None {
+            if sudoku.get(row, col).is_some() {
                 continue;
             }
             for val in 1..10 {
@@ -40,14 +40,12 @@ pub fn solve_sudoku_bfs(sudoku: &Sudoku) -> Result<Sudoku, SudokuError> {
     }
 
     let mut queue: Vec<Sudoku> = Vec::new();
-    queue.push(sudoku.clone());
+    queue.push(*sudoku);
 
-    while !queue.is_empty() {
-        let current: Sudoku = queue.pop().unwrap();
-
+    while let Some(current) = queue.pop() {
         for row in 0..9 {
             for col in 0..9 {
-                if current.get(row, col) != None {
+                if current.get(row, col).is_some() {
                     continue;
                 }
 
@@ -56,7 +54,7 @@ pub fn solve_sudoku_bfs(sudoku: &Sudoku) -> Result<Sudoku, SudokuError> {
                     if !current.is_valid_to_set(row, col, val) {
                         continue;
                     }
-                    let new_sudoku = current.clone().set(row, col, val);
+                    let new_sudoku = current.set(row, col, val);
 
                     if !new_sudoku.verify() {
                         continue;

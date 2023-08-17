@@ -110,7 +110,7 @@ impl Sudoku {
         if self
             .data
             .iter()
-            .any(|row| row.iter().any(|cell| *cell == None))
+            .any(|row| row.iter().any(|cell| cell.is_none()))
         {
             return false;
         }
