@@ -11,7 +11,7 @@ pub fn solve_sudoku(sudoku: &Sudoku) -> Result<Sudoku, SudokuError> {
     }
     for row in 0..9 {
         for col in 0..9 {
-            if sudoku.get(row, col) != 0 {
+            if sudoku.get(row, col) != None {
                 continue;
             }
             for val in 1..10 {
@@ -56,7 +56,7 @@ mod tests {
 
     #[test]
     fn test_solve_one_missing_value() {
-        let missing_one = solved_sudoku().set(0, 0, 0);
+        let missing_one = solved_sudoku().unset(0, 0);
         let result = solve_sudoku(&missing_one);
         assert_eq!(result.unwrap(), solved_sudoku());
     }
@@ -65,7 +65,7 @@ mod tests {
     fn test_solve_one_row() {
         let first_row_zero = &mut solved_sudoku();
         for i in 0..9 {
-            *first_row_zero = first_row_zero.set(0, i, 0);
+            *first_row_zero = first_row_zero.unset(0, i);
         }
         let result = solve_sudoku(first_row_zero).unwrap();
         assert_eq!(result, solved_sudoku());

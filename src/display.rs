@@ -10,7 +10,10 @@ impl std::fmt::Display for Sudoku {
             output.push('|');
 
             for col in 0..9 {
-                output.push_str(format!("{}", self.get(row, col)).as_str());
+                match self.get(row, col) {
+                    None => output.push_str(" "),
+                    Some(val) => output.push_str(&format!("{}", val)),
+                }
                 if col == 2 || col == 5 {
                     output.push('|');
                 }
@@ -48,23 +51,23 @@ mod testsalso {
         let mut doku = Sudoku::default();
         for row in 0..9 {
             for col in 0..9 {
-                doku = doku.set(row, col, (row / 3 % 3 * 3 + (col / 3)) as u8);
+                doku = doku.set(row, col, ((row / 3 % 3 * 3 + (col / 3)) + 1) as u8);
             }
         }
         assert_eq!(
             format!("{}", doku),
             r#"+---+---+---+
-|000|111|222|
-|000|111|222|
-|000|111|222|
+|111|222|333|
+|111|222|333|
+|111|222|333|
 +---+---+---+
-|333|444|555|
-|333|444|555|
-|333|444|555|
+|444|555|666|
+|444|555|666|
+|444|555|666|
 +---+---+---+
-|666|777|888|
-|666|777|888|
-|666|777|888|
+|777|888|999|
+|777|888|999|
+|777|888|999|
 +---+---+---+"#
         );
     }

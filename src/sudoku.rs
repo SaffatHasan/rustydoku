@@ -2,12 +2,14 @@ use std::collections::HashSet;
 
 #[derive(PartialEq, Eq, Hash, Copy, Clone, Debug, Default)]
 pub struct Sudoku {
-    data: [[u8; 9]; 9],
+    data: [[Option<u8>; 9]; 9],
 }
 
 impl Sudoku {
     pub fn new(values: [[u8; 9]; 9]) -> Sudoku {
-        Sudoku { data: values }
+        Sudoku {
+            data: values.map(|row| row.map(|value| if value == 0 { None } else { Some(value) })),
+        }
     }
 
     // Only checks for local validity (row, box, col).
@@ -20,14 +22,21 @@ impl Sudoku {
             && copy.verify_box(row - (row % 3), col - (col % 3))
     }
 
-    pub fn get(&self, row: usize, col: usize) -> u8 {
+    pub fn get(&self, row: usize, col: usize) -> Option<u8> {
         self.data[row][col]
     }
 
     // Returns a new instance of Sudoku.
     pub fn set(self, row: usize, col: usize, val: u8) -> Sudoku {
         let new = &mut self.clone();
-        new.data[row][col] = val;
+        new.data[row][col] = Some(val);
+        *new
+    }
+
+    #[allow(dead_code)]
+    pub fn unset(self, row: usize, col: usize) -> Sudoku {
+        let new = &mut self.clone();
+        new.data[row][col] = None;
         *new
     }
 
@@ -53,11 +62,12 @@ impl Sudoku {
     fn verify_row(&self, row: usize) -> bool {
         let mut seen: HashSet<u8> = HashSet::new();
         for col in 0..9 {
-            let value = self.get(row, col);
-            if value != 0 && seen.contains(&value) {
-                return false;
+            if let Some(value) = self.get(row, col) {
+                if seen.contains(&value) {
+                    return false;
+                }
+                seen.insert(value);
             }
-            seen.insert(value);
         }
         true
     }
@@ -65,11 +75,12 @@ impl Sudoku {
     fn verify_col(&self, col: usize) -> bool {
         let mut seen: HashSet<u8> = HashSet::new();
         for row in 0..9 {
-            let value = self.get(row, col);
-            if value != 0 && seen.contains(&value) {
-                return false;
+            if let Some(value) = self.get(row, col) {
+                if seen.contains(&value) {
+                    return false;
+                }
+                seen.insert(value);
             }
-            seen.insert(value);
         }
         true
     }
@@ -83,11 +94,12 @@ impl Sudoku {
         let mut seen: HashSet<u8> = HashSet::new();
         for i in 0..3 {
             for j in 0..3 {
-                let value = self.get(row - (row % 3) + i, col - (col % 3) + j);
-                if value != 0 && seen.contains(&value) {
-                    return false;
+                if let Some(value) = self.get(row - (row % 3) + i, col - (col % 3) + j) {
+                    if seen.contains(&value) {
+                        return false;
+                    }
+                    seen.insert(value);
                 }
-                seen.insert(value);
             }
         }
         true
@@ -98,7 +110,7 @@ impl Sudoku {
         if self
             .data
             .iter()
-            .any(|row| row.iter().any(|cell| *cell == 0))
+            .any(|row| row.iter().any(|cell| *cell == None))
         {
             return false;
         }
@@ -115,7 +127,7 @@ mod tests {
         let sudoku: Sudoku = Sudoku::new(values);
         for (row_idx, row) in values.iter().enumerate() {
             for (col_idx, cell) in row.iter().enumerate() {
-                assert_eq!(sudoku.get(row_idx, col_idx), *cell);
+                assert_eq!(sudoku.get(row_idx, col_idx), Some(*cell));
             }
         }
     }
@@ -132,7 +144,7 @@ mod tests {
     fn test_set() {
         let mut sudoku: Sudoku = Sudoku::default();
         sudoku = sudoku.set(0, 0, 1);
-        assert_eq!(sudoku.get(0, 0), 1);
+        assert_eq!(sudoku.get(0, 0), Some(1));
     }
 
     #[test]
