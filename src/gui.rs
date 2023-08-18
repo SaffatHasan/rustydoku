@@ -42,7 +42,7 @@ impl eframe::App for MyApp {
                     for col in 0..9 {
                         match self.board.get(row, col) {
                             None => {
-                                let val = &mut " ".to_owned();
+                                let val: &mut String = &mut " ".to_owned();
                                 ui.add(egui::TextEdit::singleline(val).char_limit(1));
                             }
                             Some(val) => {
